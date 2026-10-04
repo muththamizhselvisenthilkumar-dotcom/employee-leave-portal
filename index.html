@@ -1,0 +1,544 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Employee Leave Portal</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage" class="login-container">
+
+    <div class="login-box">
+
+        <div class="logo">ELP</div>
+
+        <h1>Employee Leave Portal</h1>
+        <p class="subtitle">Smart Leave Management System</p>
+
+        <form id="loginForm">
+
+            <label>Employee ID</label>
+            <input
+                type="text"
+                id="employeeId"
+                placeholder="Enter Employee ID"
+                required
+            >
+
+            <label>Password</label>
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter Password"
+                required
+            >
+
+            <button type="submit" class="login-btn">
+                Login
+            </button>
+
+        </form>
+
+        <p class="demo">
+            Demo Login: <b>EMP001</b> / <b>1234</b>
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- MAIN APPLICATION -->
+<div id="app" class="app hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-logo">ELP</div>
+            <div>
+                <h2>LeavePortal</h2>
+                <small>Employee System</small>
+            </div>
+        </div>
+
+        <nav>
+
+            <button class="nav-item active" onclick="showSection('dashboard', this)">
+                🏠 Dashboard
+            </button>
+
+            <button class="nav-item" onclick="showSection('apply', this)">
+                📝 Apply Leave
+            </button>
+
+            <button class="nav-item" onclick="showSection('history', this)">
+                📋 Leave History
+            </button>
+
+            <button class="nav-item" onclick="showSection('profile', this)">
+                👤 My Profile
+            </button>
+
+        </nav>
+
+        <button class="logout-btn" onclick="logout()">
+            🚪 Logout
+        </button>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+
+            <div>
+                <h2 id="pageTitle">Dashboard</h2>
+                <p id="dateDisplay"></p>
+            </div>
+
+            <div class="user-area">
+
+                <div class="notification">
+                    🔔
+                    <span id="notificationCount">0</span>
+                </div>
+
+                <div class="avatar">MS</div>
+
+                <div>
+                    <b>Muththamizh Selvi</b>
+                    <small>Software Engineer</small>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="section active-section">
+
+            <div class="welcome">
+
+                <div>
+                    <h1>Good Morning, Muththamizh! 👋</h1>
+                    <p>Here's your leave overview for this year.</p>
+                </div>
+
+                <button onclick="openApply()">
+                    + Apply Leave
+                </button>
+
+            </div>
+
+
+            <!-- STAT CARDS -->
+            <div class="stats">
+
+                <div class="stat-card">
+                    <div class="stat-icon blue">📅</div>
+                    <div>
+                        <span>Casual Leave</span>
+                        <h2 id="casualBalance">12</h2>
+                        <small>Days remaining</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">🏥</div>
+                    <div>
+                        <span>Sick Leave</span>
+                        <h2 id="sickBalance">10</h2>
+                        <small>Days remaining</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon purple">🌴</div>
+                    <div>
+                        <span>Earned Leave</span>
+                        <h2 id="earnedBalance">15</h2>
+                        <small>Days remaining</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">⏳</div>
+                    <div>
+                        <span>Pending</span>
+                        <h2 id="pendingCount">0</h2>
+                        <small>Requests</small>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- QUICK ACTIONS -->
+            <div class="dashboard-grid">
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <h3>Recent Leave Requests</h3>
+
+                        <button
+                            class="text-btn"
+                            onclick="showSection('history')">
+                            View All
+                        </button>
+                    </div>
+
+                    <div id="recentLeaves"></div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <h3>Leave Summary</h3>
+                    </div>
+
+                    <div class="progress-item">
+
+                        <div>
+                            <span>Casual Leave</span>
+                            <b id="casualPercent">12 / 12</b>
+                        </div>
+
+                        <div class="progress">
+                            <div id="casualProgress"></div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="progress-item">
+
+                        <div>
+                            <span>Sick Leave</span>
+                            <b id="sickPercent">10 / 10</b>
+                        </div>
+
+                        <div class="progress">
+                            <div id="sickProgress"></div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="progress-item">
+
+                        <div>
+                            <span>Earned Leave</span>
+                            <b id="earnedPercent">15 / 15</b>
+                        </div>
+
+                        <div class="progress">
+                            <div id="earnedProgress"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- APPLY LEAVE -->
+        <section id="apply" class="section">
+
+            <div class="page-card">
+
+                <div class="section-heading">
+
+                    <div>
+                        <h1>Apply for Leave</h1>
+                        <p>Submit a new leave request.</p>
+                    </div>
+
+                </div>
+
+
+                <form id="leaveForm" class="leave-form">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label>Leave Type</label>
+
+                            <select id="leaveType" required>
+
+                                <option value="">
+                                    Select Leave Type
+                                </option>
+
+                                <option value="Casual Leave">
+                                    Casual Leave
+                                </option>
+
+                                <option value="Sick Leave">
+                                    Sick Leave
+                                </option>
+
+                                <option value="Earned Leave">
+                                    Earned Leave
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>Number of Days</label>
+
+                            <input
+                                type="number"
+                                id="leaveDays"
+                                min="1"
+                                max="30"
+                                placeholder="Enter days"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>From Date</label>
+
+                            <input
+                                type="date"
+                                id="fromDate"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>To Date</label>
+
+                            <input
+                                type="date"
+                                id="toDate"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Reason for Leave</label>
+
+                        <textarea
+                            id="reason"
+                            rows="5"
+                            placeholder="Enter the reason for your leave..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="leave-info">
+
+                        <div>
+                            <b>Available Balance</b>
+                            <span id="availableBalance">
+                                Select leave type
+                            </span>
+                        </div>
+
+                        <div>
+                            <b>Request Status</b>
+                            <span class="pending-text">
+                                Pending Approval
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-buttons">
+
+                        <button
+                            type="button"
+                            class="cancel-btn"
+                            onclick="showSection('dashboard')">
+                            Cancel
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="submit-btn">
+                            Submit Request
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- HISTORY -->
+        <section id="history" class="section">
+
+            <div class="page-card">
+
+                <div class="section-heading">
+
+                    <div>
+                        <h1>Leave History</h1>
+                        <p>View all your leave requests.</p>
+                    </div>
+
+                    <select id="filterStatus" onchange="renderHistory()">
+
+                        <option value="All">
+                            All Requests
+                        </option>
+
+                        <option value="Pending">
+                            Pending
+                        </option>
+
+                        <option value="Approved">
+                            Approved
+                        </option>
+
+                        <option value="Rejected">
+                            Rejected
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Leave Type</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Days</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="historyTable"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- PROFILE -->
+        <section id="profile" class="section">
+
+            <div class="page-card">
+
+                <div class="profile-header">
+
+                    <div class="large-avatar">
+                        MS
+                    </div>
+
+                    <div>
+                        <h1>Muththamizh Selvi</h1>
+                        <p>Software Engineer</p>
+                    </div>
+
+                </div>
+
+
+                <div class="profile-grid">
+
+                    <div class="profile-item">
+                        <span>Employee ID</span>
+                        <b>EMP001</b>
+                    </div>
+
+                    <div class="profile-item">
+                        <span>Email</span>
+                        <b>employee@example.com</b>
+                    </div>
+
+                    <div class="profile-item">
+                        <span>Department</span>
+                        <b>Computer Science</b>
+                    </div>
+
+                    <div class="profile-item">
+                        <span>Designation</span>
+                        <b>Software Engineer</b>
+                    </div>
+
+                    <div class="profile-item">
+                        <span>Joining Date</span>
+                        <b>10 June 2024</b>
+                    </div>
+
+                    <div class="profile-item">
+                        <span>Manager</span>
+                        <b>HR Department</b>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- TOAST MESSAGE -->
+<div id="toast" class="toast"></div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
+```
